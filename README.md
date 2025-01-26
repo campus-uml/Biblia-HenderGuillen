@@ -12,5 +12,5 @@ Este proyecto tiene como objetivo explorar, analizar y proporcionar recursos int
 npm install
 npm install axios
 npm install @shadcn/ui
-.
+...
 
