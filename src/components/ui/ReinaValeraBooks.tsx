@@ -4,7 +4,7 @@ import {
   getBookChapters,
   getChapterVerses,
   getVerseText,
-} from './api'; // Importa las funciones de la API
+} from './api';
 import { ArrowLeft } from 'lucide-react';
 
 const ReinaValeraBooks: React.FC = () => {
@@ -19,14 +19,13 @@ const ReinaValeraBooks: React.FC = () => {
   const [search, setSearch] = useState('');
   const [loading, setLoading] = useState(false);
 
-  // Cargar todos los libros al iniciar
   useEffect(() => {
     const fetchBooks = async () => {
       try {
         setLoading(true);
         const data = await getReinaValeraBooks();
         setBooks(data.data);
-        setFilteredBooks(data.data); // Inicializa libros filtrados
+        setFilteredBooks(data.data);
       } catch (error) {
         console.error('Error fetching books:', error);
       } finally {
@@ -36,7 +35,6 @@ const ReinaValeraBooks: React.FC = () => {
     fetchBooks();
   }, []);
 
-  // Filtrar libros en tiempo real
   useEffect(() => {
     setFilteredBooks(
       books.filter((book) =>
@@ -82,12 +80,9 @@ const ReinaValeraBooks: React.FC = () => {
     try {
       setLoading(true);
       const data = await getVerseText(verse.id);
-
-      // Limpia el contenido eliminando etiquetas HTML
       const parser = new DOMParser();
       const parsedDocument = parser.parseFromString(data.data.content, 'text/html');
-      const cleanText = parsedDocument.body.textContent || ''; // Extrae solo texto puro
-
+      const cleanText = parsedDocument.body.textContent || '';
       setVerseText(cleanText);
     } catch (error) {
       console.error('Error fetching verse text:', error);
@@ -97,92 +92,80 @@ const ReinaValeraBooks: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-100 p-8">
-      <div className="max-w-4xl mx-auto bg-white shadow-lg rounded-xl p-6">
-        <h1 className="text-2xl font-bold text-gray-800 mb-6 flex items-center">
-          📖 Biblia Reina Valera
-        </h1>
+    <div className="min-h-screen w-full bg-gradient-to-r from-purple-500 via-pink-500 to-red-500 flex items-center justify-center p-4">
+      <div className="w-full max-w-4xl bg-white shadow-xl rounded-2xl p-6">
+        <h1 className="text-4xl font-bold text-gray-800 mb-6">📖 Reina Valera</h1>
         <input
           type="text"
           placeholder="Buscar libro..."
-          className="p-3 border rounded-lg w-full mb-6"
+          className="p-4 border border-gray-300 rounded-lg w-full mb-6 focus:outline-none focus:ring-2 focus:ring-purple-500"
           value={search}
           onChange={(e) => setSearch(e.target.value)}
         />
-        {loading && <p className="text-gray-500">Cargando...</p>}
+        {loading && <p className="text-gray-600">Cargando...</p>}
         {!selectedBook ? (
-          <ul className="space-y-4">
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
             {filteredBooks.map((book) => (
-              <li
+              <div
                 key={book.id}
-                className="p-4 border rounded-lg cursor-pointer hover:bg-gray-200"
+                className="p-4 bg-purple-100 rounded-lg shadow-md cursor-pointer hover:bg-purple-200 hover:scale-105 transform transition-all duration-300"
                 onClick={() => handleBookClick(book)}
               >
-                {book.name}
-              </li>
+                <h2 className="text-lg font-bold text-purple-700">{book.name}</h2>
+              </div>
             ))}
-          </ul>
+          </div>
         ) : !selectedChapter ? (
           <>
             <button
-              className="mb-4 text-blue-500 flex items-center"
-              onClick={() => {
-                setSelectedBook(null);
-                setChapters([]);
-              }}
+              className="mb-6 text-purple-600 flex items-center"
+              onClick={() => setSelectedBook(null)}
             >
-              <ArrowLeft className="mr-2" /> Volver a los libros
+              <ArrowLeft className="mr-2" /> Volver
             </button>
-            <h2 className="text-lg font-bold mb-4">{selectedBook.name}</h2>
-            <ul className="space-y-2">
+            <h2 className="text-2xl font-semibold text-gray-800 mb-4">{selectedBook.name}</h2>
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
               {chapters.map((chapter) => (
-                <li
+                <div
                   key={chapter.id}
-                  className="p-2 border rounded-lg cursor-pointer hover:bg-gray-200"
+                  className="p-4 bg-pink-100 rounded-lg shadow-md cursor-pointer hover:bg-pink-200 hover:scale-105 transform transition-all duration-300"
                   onClick={() => handleChapterClick(chapter)}
                 >
-                  {chapter.reference}
-                </li>
+                  <h3 className="text-md font-medium text-pink-700">{chapter.reference}</h3>
+                </div>
               ))}
-            </ul>
+            </div>
           </>
         ) : !selectedVerse ? (
           <>
             <button
-              className="mb-4 text-blue-500 flex items-center"
-              onClick={() => {
-                setSelectedChapter(null);
-                setVerses([]);
-              }}
+              className="mb-6 text-pink-600 flex items-center"
+              onClick={() => setSelectedChapter(null)}
             >
-              <ArrowLeft className="mr-2" /> Volver a los capítulos
+              <ArrowLeft className="mr-2" /> Volver
             </button>
-            <h3 className="text-lg font-bold mb-4">{selectedChapter.reference}</h3>
-            <ul className="space-y-2">
+            <h3 className="text-xl font-semibold text-gray-800 mb-4">{selectedChapter.reference}</h3>
+            <div className="grid grid-cols-3 gap-4">
               {verses.map((verse) => (
-                <li
+                <div
                   key={verse.id}
-                  className="p-2 border rounded-lg cursor-pointer hover:bg-gray-200"
+                  className="p-4 bg-red-100 rounded-lg shadow-md cursor-pointer hover:bg-red-200 hover:scale-105 transform transition-all duration-300"
                   onClick={() => handleVerseClick(verse)}
                 >
-                  {verse.reference}
-                </li>
+                  <p className="text-sm font-medium text-red-700">{verse.reference}</p>
+                </div>
               ))}
-            </ul>
+            </div>
           </>
         ) : (
           <>
             <button
-              className="mb-4 text-blue-500 flex items-center"
-              onClick={() => {
-                setSelectedVerse(null);
-              }}
+              className="mb-6 text-red-600 flex items-center"
+              onClick={() => setSelectedVerse(null)}
             >
-              <ArrowLeft className="mr-2" /> Volver a los versículos
+              <ArrowLeft className="mr-2" /> Volver
             </button>
-            <p className="text-lg text-gray-700 whitespace-pre-wrap">
-              {verseText || 'Cargando texto...'}
-            </p>
+            <p className="text-gray-800 bg-gray-100 p-6 rounded-lg shadow-inner whitespace-pre-wrap">{verseText || 'Cargando texto...'}</p>
           </>
         )}
       </div>

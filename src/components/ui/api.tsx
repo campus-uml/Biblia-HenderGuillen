@@ -1,12 +1,10 @@
 import axios from 'axios';
 
-const API_KEY = '44c6a11ef0ff48480269569370e5af01'; // Reemplaza con tu API Key
-const BASE_URL = 'https://api.scripture.api.bible/v1';
 
 const api = axios.create({
-  baseURL: BASE_URL,
+  baseURL: import.meta.env.VITE_BIBLE_API_URL,
   headers: {
-    'api-key': '44c6a11ef0ff48480269569370e5af01',
+    'api-key': import.meta.env.VITE_BIBLE_API_KEY,
   },
 });
 
