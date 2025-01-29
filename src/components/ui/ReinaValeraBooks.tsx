@@ -93,7 +93,7 @@ const ReinaValeraBooks: React.FC = () => {
 
   return (
     <div className="min-h-screen w-full bg-gradient-to-r from-purple-500 via-pink-500 to-red-500 flex items-center justify-center p-4">
-      <div className="w-full max-w-4xl bg-white shadow-xl rounded-2xl p-6">
+      <div className="w-full max-w-6xl bg-white shadow-xl rounded-2xl p-6 flex flex-col items-center">
         <h1 className="text-4xl font-bold text-gray-800 mb-6">📖 Reina Valera</h1>
         <input
           type="text"
@@ -104,11 +104,11 @@ const ReinaValeraBooks: React.FC = () => {
         />
         {loading && <p className="text-gray-600">Cargando...</p>}
         {!selectedBook ? (
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+          <div className="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4 w-full">
             {filteredBooks.map((book) => (
               <div
                 key={book.id}
-                className="p-4 bg-purple-100 rounded-lg shadow-md cursor-pointer hover:bg-purple-200 hover:scale-105 transform transition-all duration-300"
+                className="p-6 bg-purple-100 rounded-lg shadow-md cursor-pointer hover:bg-purple-200 hover:scale-105 transform transition-all duration-300 text-center"
                 onClick={() => handleBookClick(book)}
               >
                 <h2 className="text-lg font-bold text-purple-700">{book.name}</h2>
@@ -123,12 +123,11 @@ const ReinaValeraBooks: React.FC = () => {
             >
               <ArrowLeft className="mr-2" /> Volver
             </button>
-            <h2 className="text-2xl font-semibold text-gray-800 mb-4">{selectedBook.name}</h2>
-            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+            <div className="grid grid-cols-4 gap-4 w-full">
               {chapters.map((chapter) => (
                 <div
                   key={chapter.id}
-                  className="p-4 bg-pink-100 rounded-lg shadow-md cursor-pointer hover:bg-pink-200 hover:scale-105 transform transition-all duration-300"
+                  className="p-6 bg-pink-100 rounded-lg shadow-md cursor-pointer hover:bg-pink-200 hover:scale-105 transform transition-all duration-300 text-center"
                   onClick={() => handleChapterClick(chapter)}
                 >
                   <h3 className="text-md font-medium text-pink-700">{chapter.reference}</h3>
@@ -144,12 +143,11 @@ const ReinaValeraBooks: React.FC = () => {
             >
               <ArrowLeft className="mr-2" /> Volver
             </button>
-            <h3 className="text-xl font-semibold text-gray-800 mb-4">{selectedChapter.reference}</h3>
-            <div className="grid grid-cols-3 gap-4">
+            <div className="grid grid-cols-5 gap-4 w-full">
               {verses.map((verse) => (
                 <div
                   key={verse.id}
-                  className="p-4 bg-red-100 rounded-lg shadow-md cursor-pointer hover:bg-red-200 hover:scale-105 transform transition-all duration-300"
+                  className="p-6 bg-red-100 rounded-lg shadow-md cursor-pointer hover:bg-red-200 hover:scale-105 transform transition-all duration-300 text-center"
                   onClick={() => handleVerseClick(verse)}
                 >
                   <p className="text-sm font-medium text-red-700">{verse.reference}</p>
@@ -165,7 +163,7 @@ const ReinaValeraBooks: React.FC = () => {
             >
               <ArrowLeft className="mr-2" /> Volver
             </button>
-            <p className="text-gray-800 bg-gray-100 p-6 rounded-lg shadow-inner whitespace-pre-wrap">{verseText || 'Cargando texto...'}</p>
+            <p className="text-gray-800 bg-gray-100 p-6 rounded-lg shadow-inner whitespace-pre-wrap w-full text-center">{verseText || 'Cargando'}</p>
           </>
         )}
       </div>
