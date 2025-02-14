@@ -1,4 +1,6 @@
 import React, { useEffect, useState } from 'react';
+import { signOut } from 'firebase/auth';
+import { auth } from './firebase'; // Asegúrate de que esta ruta es correcta
 import {
   getReinaValeraBooks,
   getBookChapters,
@@ -17,7 +19,7 @@ const ReinaValeraBooks: React.FC = () => {
   const [selectedVerse, setSelectedVerse] = useState<any | null>(null);
   const [verseText, setVerseText] = useState<string | null>(null);
   const [search, setSearch] = useState('');
-  const [loading, setLoading] = useState(false);
+  const [, setLoading] = useState(false);
 
   useEffect(() => {
     const fetchBooks = async () => {
@@ -91,10 +93,28 @@ const ReinaValeraBooks: React.FC = () => {
     }
   };
 
+  const handleLogout = async () => {
+    try {
+      await signOut(auth);
+      window.location.reload(); // Recargar la página para redirigir al login
+    } catch (error) {
+      console.error("Error al cerrar sesión:", error);
+    }
+  };
+
   return (
-    <div className="min-h-screen w-full bg-gradient-to-r from-purple-500 via-pink-500 to-red-500 flex items-center justify-center p-4">
+    <div className="min-h-screen w-full bg-gradient-to-r from-purple-500 via-pink-500 to-red-500 flex flex-col items-center justify-center p-4">
       <div className="w-full max-w-6xl bg-white shadow-xl rounded-2xl p-6 flex flex-col items-center">
-        <h1 className="text-4xl font-bold text-gray-800 mb-6">📖 Reina Valera</h1>
+        <div className="w-full flex justify-between items-center mb-6">
+          <h1 className="text-4xl font-bold text-gray-800">📖 Reina Valera</h1>
+          <button 
+            className="bg-red-500 text-white px-4 py-2 rounded-lg shadow hover:bg-red-700 transition"
+            onClick={handleLogout}
+          >
+            Cerrar sesión
+          </button>
+        </div>
+
         <input
           type="text"
           placeholder="Buscar libro..."
@@ -102,7 +122,7 @@ const ReinaValeraBooks: React.FC = () => {
           value={search}
           onChange={(e) => setSearch(e.target.value)}
         />
-        {loading && <p className="text-gray-600">Cargando...</p>}
+ 
         {!selectedBook ? (
           <div className="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4 w-full">
             {filteredBooks.map((book) => (
