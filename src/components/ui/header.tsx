@@ -14,7 +14,13 @@ const Header: React.FC<HeaderProps> = ({ onLogout }) => {
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
       setUser(currentUser);
     });
-    return () => unsubscribe();
+  
+    // Asegúrate de que unsubscribe es una función antes de llamarla
+    return () => {
+      if (typeof unsubscribe === 'function') {
+        unsubscribe();
+      }
+    };
   }, []);
 
   const handleLogout = async () => {
