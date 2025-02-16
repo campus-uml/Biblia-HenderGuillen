@@ -56,16 +56,14 @@ const Login: React.FC<LoginProps> = ({ onLogin }) => {
       <Card className="w-full max-w-md min-h-[500px] flex flex-col justify-between bg-white p-6 rounded-lg shadow-xl">
         <CardHeader>
           <CardTitle className="text-center text-2xl font-bold">
-            <div className="flex items-center justify-center space-x-2">
+            <div className="flex items-center justify-center space-x-0">
               <FaBook className="text-3xl text-yellow-600" />
               <span className="text-gray-700">Bienvenido a la Biblia Reina Valera</span>
             </div>
           </CardTitle>
         </CardHeader>
         <CardContent className="flex flex-col justify-center grow space-y-4">
-          <div className="text-center text-lg text-gray-600 font-semibold">
-            <p>Inicia sesión para continuar</p>
-          </div>
+          
 
           {error && (
             <div className="text-red-600 text-center bg-red-100 p-2 rounded-md">
@@ -73,38 +71,10 @@ const Login: React.FC<LoginProps> = ({ onLogin }) => {
             </div>
           )}
 
-          <input
-            type="email"
-            placeholder="Correo electrónico"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-          />
-          <input
-            type="password"
-            placeholder="Contraseña"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-          />
-
-          <Button
-            onClick={handleLogin}
-            className="w-full bg-blue-600 text-white font-semibold py-2 rounded-lg hover:bg-blue-500 transition"
-          >
-            Iniciar sesión
-          </Button>
-
-          <Button
-            onClick={handleRegister}
-            className="w-full bg-green-600 text-white font-semibold py-2 rounded-lg hover:bg-green-500 transition"
-          >
-            Registrarse
-          </Button>
 
           <div className="flex items-center gap-2 my-4">
             <hr className="flex-grow border-gray-300" />
-            <span className="text-gray-500 font-medium whitespace-nowrap">O inicia sesión con</span>
+            <span className="text-gray-500 font-medium whitespace-nowrap">inicia sesión con</span>
             <hr className="flex-grow border-gray-300" />
           </div>
 

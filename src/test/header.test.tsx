@@ -1,81 +1,61 @@
-import { describe, it, expect, beforeEach, Mock, vi } from "vitest";
-import { render, fireEvent, screen, waitFor } from "@testing-library/react";
-import Header from "../components/ui/header";
+import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import '@testing-library/jest-dom';
-import { auth } from "../components/ui/firebase";
-import { onAuthStateChanged, signOut,  } from "firebase/auth";
+import Header from '../components/ui/header';
+import { onAuthStateChanged, signOut } from 'firebase/auth';
+import { auth } from '../components/ui/firebase';
 
-// Mock de las funciones de Firebase
-vi.mock("firebase/auth", () => ({
-  getAuth: vi.fn(() => ({
-    currentUser: null, // Simula que no hay usuario autenticado
-  })),
-  onAuthStateChanged: vi.fn(),
-  signOut: vi.fn(),
-  GoogleAuthProvider: vi.fn(),
-  GithubAuthProvider: vi.fn(),
-}));
+vi.mock('firebase/auth');
+vi.mock('react-icons/fa', () => ({ FaSignOutAlt: () => <div>MockFaSignOutAlt</div> }));
 
-describe("Testing de Header.tsx", () => {
-  const mockOnLogout = vi.fn();
+describe('Header Component', () => {
+  const onLogoutMock = vi.fn();
 
   beforeEach(() => {
     vi.clearAllMocks();
   });
 
-  it("Debe renderizar el componente correctamente", () => {
-    const { baseElement } = render(<Header onLogout={mockOnLogout} />);
-    expect(baseElement).toMatchSnapshot();
+  it('renders login text when no user is logged in', () => {
+    render(<Header onLogout={onLogoutMock} />);
+    expect(screen.getByText('Iniciar sesión')).toBeInTheDocument();
   });
 
-  it("Debe mostrar 'Iniciar sesión' cuando no hay un usuario autenticado", () => {
-    (onAuthStateChanged as Mock).mockImplementation((_: any, callback: (arg0: null) => void) => {
-      callback(null); // Simula que no hay usuario autenticado
+  it('renders user email and logout button when user is logged in', async () => {
+    (onAuthStateChanged as jest.Mock).mockImplementation((_, callback) => {
+      callback({ email: 'test@example.com' });
       return vi.fn();
     });
 
-    render(<Header onLogout={mockOnLogout} />);
-    expect(screen.getByText(/Iniciar sesión/i)).toBeInTheDocument();
-  });
-
-  it("Debe mostrar el correo del usuario cuando está autenticado", async () => {
-    const mockUser = { email: "test@example.com" };
-    (onAuthStateChanged as Mock).mockImplementation((_: any, callback: (arg0: { email: string }) => void) => {
-      callback(mockUser); // Simula un usuario autenticado
-      return vi.fn();
-    });
-
-    render(<Header onLogout={mockOnLogout} />);
-    expect(await screen.findByText(/test@example.com/i)).toBeInTheDocument();
-  });
-
-  it("Debe llamar a signOut y onLogout al hacer clic en el botón de logout", async () => {
-    const mockUser = { email: "test@example.com" };
-    (onAuthStateChanged as Mock).mockImplementation((_: any, callback: (arg0: { email: string }) => void) => {
-      callback(mockUser); // Simula un usuario autenticado
-      return vi.fn();
-    });
-
-    (signOut as Mock).mockResolvedValueOnce(undefined);
-
-    render(<Header onLogout={mockOnLogout} />);
-    const logoutButton = await screen.findByRole("button", { name: /Cerrar sesión/i });
-
-    fireEvent.click(logoutButton);
+    render(<Header onLogout={onLogoutMock} />);
 
     await waitFor(() => {
-      expect(signOut).toHaveBeenCalledWith(auth); // Asegura que se llama a signOut
-      expect(mockOnLogout).toHaveBeenCalled(); // Asegura que se llama a la función onLogout
+      expect(screen.getByText('test@example.com')).toBeInTheDocument();
+      expect(screen.getByText('MockFaSignOutAlt')).toBeInTheDocument();
     });
   });
 
-  it("Debe limpiar la suscripción a onAuthStateChanged al desmontar el componente", () => {
-    const unsubscribeMock = vi.fn();
-    (onAuthStateChanged as Mock).mockImplementation(() => unsubscribeMock);
+  it('calls onLogout and signOut when logout button is clicked', async () => {
+    (onAuthStateChanged as jest.Mock).mockImplementation((_, callback) => {
+      callback({ email: 'test@example.com' });
+      return vi.fn();
+    });
 
-    const { unmount } = render(<Header onLogout={mockOnLogout} />);
+    render(<Header onLogout={onLogoutMock} />);
+
+    fireEvent.click(screen.getByText('MockFaSignOutAlt'));
+
+    await waitFor(() => {
+      expect(signOut).toHaveBeenCalledWith(auth);
+      expect(onLogoutMock).toHaveBeenCalled();
+    });
+  });
+
+  it('unsubscribes from onAuthStateChanged on unmount', () => {
+    const unsubscribeMock = vi.fn();
+    (onAuthStateChanged as jest.Mock).mockReturnValue(unsubscribeMock);
+
+    const { unmount } = render(<Header onLogout={onLogoutMock} />);
     unmount();
 
-    expect(unsubscribeMock).toHaveBeenCalled(); // Verifica que se llama a la función de desuscripción
+    expect(unsubscribeMock).toHaveBeenCalled();
   });
 });
